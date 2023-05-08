@@ -12,9 +12,12 @@
 "?>"						return FINISH;
 if							return IF;
 else						return ELSE;
+for							return FOR;
+foreach						return FOREACH;
 while						return WHILE;
 return						return RETURN;
 print						return PRINT;
+as							return AS;
 
 "++"						return INC;
 "--"						return DEC;
@@ -33,8 +36,10 @@ print						return PRINT;
 "<"							return LESS;
 "="							return EQ;
 
+"$"							return DOLLAR;
+
 [0-9]+						return NUMBER;
-[a-zA-Z_][a-zA-Z0-9_]*		return VAR;
+[a-zA-Z_][a-zA-Z0-9_]*		return NAME;
 [-{};()=<>+*/%!?]			return *yytext;
 [ \t\r\n]
 %%
