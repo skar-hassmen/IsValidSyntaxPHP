@@ -15,19 +15,21 @@
 
 
 %start st
-%token START FINISH FUNC IF ELSE WHILE RETURN PRINT INC DEC SAL SAR XOR NEG OR AND ADD SUB MUL DIV MOD NEQ EQ MORE LESS NUMBER VAR
-
+%token START FINISH FUNC IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
 
 %%
 st:
-	| START body FINISH
+	| START bod FINISH
 	;
 	
+bod:
+	| bod body
+	;
 body:
 	//| class
-	| body
-	| func
-	| struct
+	//| body body
+	func
+	//| struct
 	| block
 	;
 /*	
@@ -36,7 +38,7 @@ class:
 	;*/
 	
 func:
-	FUNC NAME '(' args ')' '{' block '}'
+	FUNC NAME '(' args_and_type ')' ret_type '{' block '}'
 	| prototype
 	;
 prototype:
@@ -45,22 +47,28 @@ prototype:
 prototype_for_arg:
 	NAME '(' args ')'
 	;
-
+	
+ret_type:
+	| ':' NAME
+	;
+	
+	
+/*
 struct:
 	STRUCT NAME '{' st_vars '}'
-	;
+	;*/
 
 block:
-	| block command
+	| command
 	;
 	
 command: 
-	| vars		///////////////////////
+	| var		
 	| expr ';'
 	| compare
 	| loop
 	| operator
-	| base_func	/////////////////////////////
+	//| base_func	/////////////////////////////
 	| switch
 	;
 	
@@ -88,8 +96,8 @@ continue:
 	;
 echo:
 	ECHO oper_args ';'
-	| ECHO '"' string '"' ';'
-	| ECHO '\'' string '\'' ';'
+	//| ECHO '"' string '"' ';'
+	//| ECHO '\'' string '\'' ';'
 	;
 	
 switch:
@@ -135,9 +143,13 @@ while:
 	| WHILE '(' expr ')' ';'
 	;	
 foreach:
-	FOREACH '(' vars AS vars ')' '{' block '}'
-	| FOREACH '(' vars AS vars ')' command
-	| FOREACH '(' vars AS vars ')' ';'
+	FOREACH '(' left_expr AS expr_foreach ')' '{' block '}'
+	| FOREACH '(' left_expr AS expr_foreach ')' command
+	| FOREACH '(' left_expr AS expr_foreach ')' ';'
+	;
+expr_foreach:
+	left_expr
+	| left_expr '=' '>' left_expr
 	;
 
 expr:
@@ -192,7 +204,12 @@ right_expr:
 	| var
 	| prototype_for_arg
 	;
-	
+
+
+args_and_type:
+	args
+	| NAME ' ' args
+	;
 args:
 	| args ',' args
 	| var
