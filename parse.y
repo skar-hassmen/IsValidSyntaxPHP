@@ -29,6 +29,9 @@ body:
 command:
 	expr ';'
 	| func
+	| compare
+	| loop
+	| switch
 	;
 
 func:
@@ -44,8 +47,69 @@ ret_type:
 	| ':' NAME
 	;
 
+switch:
+	SWITCH '(' left_expr ')' '{' switch_body '}'
+	;
+switch_body:
+	cases default
+	;
+cases:
+	| cases case
+	;
+case:
+	CASE NUMBER ':' block
+	;
+default:
+	| DEFAULT ':' block
+	;
+	
+compare:
+	IF '(' expr_zero ')' '{' block '}' else
+	| IF '(' expr_zero ')' command else
+	| IF '(' expr_zero ')' ';'
+	;
+else:
+	ELSE '{' block '}'
+	| ELSE command
+	|
+	;
+	
+loop:
+	for
+	| while
+	| foreach
+	;
+
+for:
+	FOR '(' expr_zero ';' expr_zero ';' expr_zero ')' '{' block '}'
+	| FOR '(' expr_zero ';' expr_zero ';' expr_zero ')' command
+	| FOR '(' expr_zero ';' expr_zero ';' expr_zero ')' ';'
+	;
+
+while:
+	WHILE '(' expr_zero ')' '{' block '}'
+	| WHILE '(' expr_zero ')' command
+	| WHILE '(' expr_zero ')' ';'
+	;
+
+foreach:
+	FOREACH '(' left_expr AS expr_foreach ')' '{' block '}'
+	| FOREACH '(' left_expr AS expr_foreach ')' command
+	| FOREACH '(' left_expr AS expr_foreach ')' ';'
+	;
+
+expr_foreach:
+	left_expr
+	| left_expr ARROW left_expr
+	;
+
+expr_zero:
+	expr
+	| right_expr
+	;
+
 expr:
-	left_expr EQ right_expr
+	| left_expr EQ right_expr
 	| left_expr ADD_EQ right_expr 
 	| left_expr SUB_EQ right_expr 
 	| left_expr MUMU_EQ right_expr 

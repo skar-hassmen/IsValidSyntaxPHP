@@ -40,3 +40,23 @@ $ada1 = array(
     "Almir" => ["xyi" => "Almir1"]
 );
 
+$Almir = 1;
+switch ($Almir) {
+	case 1:
+		function FunctionName($value)
+		{
+			
+		}
+
+	
+	default:
+}
+
+if ($almir == 1) {
+    while($some) {
+        foreach ($Almirs as $Almir);
+        foreach ($Almirs as $FatherOfAlmir => $Almir);
+    }
+} else {
+    for ($y; $y < 17;);
+}
