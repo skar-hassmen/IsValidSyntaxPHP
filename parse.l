@@ -12,12 +12,21 @@
 "?>"						return FINISH;
 "if"						return IF;
 "else"						return ELSE;
+"function"					return FUNC;
 "foreach"					return FOREACH;
 "for"						return FOR;
 "while"						return WHILE;
 "return"					return RETURN;
 "print"						return PRINT;
 "as"						return AS;
+"break"						return BREAK;
+"case"						return CASE;
+"continue"					return CONTINUE;
+"default"					return DEFAULT;
+"echo"						return ECHO;
+"switch"					return SWITCH;
+
+
 
 "xor"                       return XOR_STR;
 "and"                       return AND_STR;
@@ -68,6 +77,6 @@
 
 [0-9]+						return NUMBER;
 [a-zA-Z_][a-zA-Z0-9_]*		return NAME;
-[-{};()=<>+*/%!?]			return *yytext;
+[-{};()=<>+*/%!?,]			return *yytext;
 [ \t\r\n]
 %%
