@@ -5,3 +5,4 @@ parse.tab.h
 parse.tab.c
 lex.yy.c
 *.out
+.vscode/settings.json
