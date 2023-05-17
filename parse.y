@@ -23,7 +23,7 @@ st:
 	;
 
 command:
-	expr
+	expr ';'
 	;
 
 expr:
@@ -76,6 +76,19 @@ right_expr:
 	| SUB NUMBER
 	| NUMBER
 	| var
+	| prototype_for_arg
+	;
+
+
+args_and_type:
+	args
+	| NAME ' ' args
+	;
+args:
+	| args ',' args
+	| var
+	| NUMBER
+	| prototype_for_arg
 	;
 
 var:
