@@ -25,8 +25,11 @@
 "default"					return DEFAULT;
 "echo"						return ECHO;
 "switch"					return SWITCH;
+"array"                     return ARRAY;
 
-
+"null"                      return NULL_TOKEN;
+"true"                      return TRUE_TOKEN;
+"false"                     return FALSE_TOKEN;
 
 "xor"                       return XOR_STR;
 "and"                       return AND_STR;
@@ -65,6 +68,7 @@
 "%"							return MOD;
 ">="                        return MORE_EQ;
 "<="                        return LESS_EQ;
+"=>"                        return ARROW;
 "==="                       return EQEQEQ;
 "=="                        return EQEQ;
 ">"							return MORE;
@@ -72,11 +76,14 @@
 "="							return EQ;
 "."                         return POINT;
 "!"                         return ANSWER;
+"["                         return SQUARE_OPEN;
+"]"                         return SQUARE_CLOSE;
+
 
 "$"							return DOLLAR;
 
 [0-9]+						return NUMBER;
 [a-zA-Z_][a-zA-Z0-9_]*		return NAME;
-[-{};()=<>+*/%!?,]			return *yytext;
+[-{};()=<>+*/%!?,:\'\"]		return *yytext;
 [ \t\r\n]
 %%

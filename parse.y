@@ -15,33 +15,33 @@
 
 
 %start st
-%token START FINISH FUNC IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
+%token START FINISH FUNC ARRAY ARROW NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
 
 %%
 st:
-	| st command 
+	| st body 
 	;
 
-func:
-	FUNC NAME '(' args_and_type ')' ret_type '{' block '}'
-	| prototype
-	;
-prototype:
-	FUNC prototype_for_arg ';'
-	;
-prototype_for_arg:
-	NAME '(' args ')'
-	;
-	
-ret_type:
-	| ':' NAME
-	;
-
-block: 
+body:
+	command
 	;
 
 command:
 	expr ';'
+	| func
+	;
+
+func:
+	FUNC NAME '(' args_and_type ')' ret_type '{' block '}'
+	| prototype_for_arg
+	;
+
+block:
+	| block command
+	;
+	
+ret_type:
+	| ':' NAME
 	;
 
 expr:
@@ -58,8 +58,38 @@ expr:
 	| left_expr AND_EQ right_expr 
 	| left_expr XOR_EQ right_expr 
 	| left_expr POINT_EQ right_expr 
+	| left_expr EQ array
 	;
 	
+
+array:
+	ARRAY '(' block_array ')'
+	| SQUARE_OPEN block_array SQUARE_CLOSE
+	;
+
+block_array:
+	| block_array ',' block_array
+	| key_array ARROW value_array
+	| value_array
+	; 
+
+
+value_array:
+	key_array
+	| array
+	;
+
+key_array:
+	'\"' NUMBER '\"'
+	| '\"' NAME '\"'
+	| '\'' NUMBER '\''
+	| '\'' NAME '\''
+	| NEG NUMBER
+	| NUMBER
+	| var
+	;
+
+
 left_expr:
 	DOLLAR NAME
 	;
@@ -99,14 +129,20 @@ right_expr:
 
 
 args_and_type:
-	args
-	| NAME ' ' args
+	args_and_type ',' args_and_type
+	| NAME left_expr
+	| left_expr
 	;
+
 args:
 	| args ',' args
 	| var
 	| NUMBER
 	| prototype_for_arg
+	;
+
+prototype_for_arg:
+	NAME '(' args ')'
 	;
 
 var:
@@ -118,6 +154,9 @@ var:
 	| NEG left_expr
 	| ANSWER left_expr
 	| SUB left_expr
+	| NULL_TOKEN
+	| TRUE_TOKEN
+	| FALSE_TOKEN
 	;
 %%
 
