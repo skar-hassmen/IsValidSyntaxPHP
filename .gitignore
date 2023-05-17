@@ -4,3 +4,4 @@ y.tab.h
 parse.tab.h
 parse.tab.c
 lex.yy.c
+*.out
