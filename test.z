@@ -1,28 +1,28 @@
 $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
 
-function almir(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
+function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
 
 }
 
 $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
 
-function almir(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
+function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
 
 }
 
 $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
 
-function almir(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
+function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
 
 }
 
 $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
 
-function almir(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
-    function almir(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
+function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
+    function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
         $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
         $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
         $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
@@ -37,11 +37,11 @@ $ada1 = array(
     array(
         '1' => 1
     ),
-    "Almir" => ["xyi" => "Almir1"]
+    "qwerty" => ["xyi" => "qwerty1"]
 );
 
-$Almir = 1;
-switch ($Almir) {
+$qwerty = 1;
+switch ($qwerty) {
 	case 1:
 		function FunctionName($value)
 		{
@@ -52,10 +52,10 @@ switch ($Almir) {
 	default:
 }
 
-if ($almir == 1) {
+if ($qwerty == 1) {
     while($some) {
-        foreach ($Almirs as $Almir);
-        foreach ($Almirs as $FatherOfAlmir => $Almir);
+        foreach ($qwertys as $qwerty);
+        foreach ($qwertys as $FatherOfqwerty => $qwerty);
     }
 } else {
     for ($y; $y < 17;);
