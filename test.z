@@ -1,2 +1,3 @@
-<?php
-?>
+$a = (-3*2*(3/-3) >= $b) + funcname();
+$a+=1;
+$a = funcname($a++, 1,2, funcname());
