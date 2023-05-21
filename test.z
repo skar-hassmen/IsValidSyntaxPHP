@@ -1,27 +1,35 @@
+include ("saddasda.qwdqdqd");
+require ("adasdad\asddsad\adasdasda");
+
+require_once "adasdad\asddsad\adasdasda";
+
+
 $a = nnn() + hhh($asd) * jj(kkk(), $ddr[$fff[1]][2], $dasd) - $ddr[$fff[1]];
 
+$f = $ddd[0];
 
 function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
-
+    return nnn() + hhh($asd) * jj(kkk(), $ddr[$fff[1]][2], $dasd) - $ddr[$fff[1]];
 }
 
 $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
 
 function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
+    echo $yyy + nnn() + hhh($asd) * jj(kkk(), $ddr[$fff[1]][2], $dasd) - $ddr[$fff[1]];
 
 }
-
+return;
 $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
 
 function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
 
 }
-
+break;
 $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
-
+continue;
 function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
     function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
         $a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
@@ -32,7 +40,7 @@ function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
 
 }
-
+echo +888;
 
 $ada1 = array(
     array(
@@ -48,9 +56,11 @@ switch ($qwerty) {
 		{
 			
 		}
+        break;
 
 	
 	default:
+        break;
 }
 
 if ($qwerty == 1) {

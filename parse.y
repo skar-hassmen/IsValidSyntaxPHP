@@ -15,7 +15,7 @@
 
 
 %start st
-%token START FINISH FUNC ARRAY ARROW NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
+%token START FINISH FUNC ARRAY ARROW INCLUDE REQUIRE REQUIRE_ONCE NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
 
 %%
 st:
@@ -32,7 +32,59 @@ command:
 	| compare
 	| loop
 	| switch
+	| operator
 	;
+
+operator:
+	return
+	| break
+	| continue
+	| echo
+	| include
+	;
+
+include:
+	INCLUDE string ';'
+	| REQUIRE string ';'
+	| REQUIRE_ONCE string ';'
+	;
+
+string:
+	'\"' continue_string '\"'
+	| '(' string ')'
+	;
+
+continue_string:
+	| continue_string continue_continue_string
+	;
+
+continue_continue_string:
+	NAME
+	| '\\'
+	| POINT
+	;
+
+return:
+	RETURN right_expr ';'
+	| RETURN ';'
+	;
+
+break:
+	BREAK ';'
+	;
+
+continue:
+	CONTINUE ';'
+	;
+
+echo:
+	ECHO right_expr ';'
+	| ECHO '\"' NUMBER '\"' ';'
+	| ECHO '\"' NAME '\"' ';'
+	| ECHO '\'' NUMBER '\'' ';'
+	| ECHO '\'' NAME '\'' ';'
+	;
+
 
 func:
 	FUNC NAME '(' args_and_type ')' ret_type '{' block '}'
@@ -186,6 +238,7 @@ right_expr:
 	| right_expr AND_STR right_expr
 	| right_expr OR_STR right_expr
 	| SUB NUMBER
+	| ADD NUMBER
 	| NUMBER
 	| var
 	| prototype_for_arg
@@ -222,6 +275,7 @@ var:
 	| NEG left_expr
 	| ANSWER left_expr
 	| SUB left_expr
+	| ADD left_expr
 	| NULL_TOKEN
 	| TRUE_TOKEN
 	| FALSE_TOKEN

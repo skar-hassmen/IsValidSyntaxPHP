@@ -26,6 +26,10 @@
 "echo"						return ECHO;
 "switch"					return SWITCH;
 "array"                     return ARRAY;
+"include"                   return INCLUDE;
+"require"                   return REQUIRE;
+"require_once"              return REQUIRE_ONCE;
+
 
 "null"                      return NULL_TOKEN;
 "true"                      return TRUE_TOKEN;
