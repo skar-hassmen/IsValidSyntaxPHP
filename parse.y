@@ -15,7 +15,7 @@
 
 
 %start st
-%token START FINISH FUNC ARRAY ARROW INCLUDE REQUIRE REQUIRE_ONCE NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
+%token START FINISH FUNC ARRAY PUBLIC_C NEW_C ARROW_CLASS PROTECTED_C PRIVATE_C STATIC_C CONST_C CLASS READ_ONLY EXTENDS ARROW INCLUDE REQUIRE REQUIRE_ONCE NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
 
 %%
 st:
@@ -33,6 +33,50 @@ command:
 	| loop
 	| switch
 	| operator
+	| class
+	;
+
+
+class:
+	readonly CLASS NAME extend '{' class_body '}'
+	;
+
+readonly:
+	| READ_ONLY
+	;
+
+extend:
+	| EXTENDS NAME
+	;
+
+class_body:
+	| class_body some_class
+	;
+
+some_class:
+	body_fields
+	| body_methods
+	;
+
+body_methods:
+	point1 point2 func
+	| point2 point1 func
+	;
+
+body_fields:
+	point1 point2 expr ';'
+	| point2 point1 expr ';'
+	| CONST_C NAME EQ right_expr ';'
+	;
+
+point1:
+	| PUBLIC_C
+	| PROTECTED_C
+	| PRIVATE_C
+	;
+
+point2:
+	| STATIC_C
 	;
 
 operator:
@@ -67,6 +111,10 @@ continue_continue_string:
 return:
 	RETURN right_expr ';'
 	| RETURN ';'
+	| RETURN '\"' NUMBER '\"' ';'
+	| RETURN '\"' NAME '\"' ';'
+	| RETURN '\'' NUMBER '\'' ';'
+	| RETURN '\'' NAME '\'' ';'
 	;
 
 break:
@@ -161,6 +209,7 @@ expr_zero:
 	;
 
 expr:
+	| left_expr
 	| left_expr EQ right_expr
 	| left_expr ADD_EQ right_expr 
 	| left_expr SUB_EQ right_expr 
@@ -175,6 +224,7 @@ expr:
 	| left_expr XOR_EQ right_expr 
 	| left_expr POINT_EQ right_expr 
 	| left_expr EQ array
+	| left_expr EQ NEW_C prototype_for_arg
 	;
 	
 
@@ -208,6 +258,13 @@ key_array:
 
 left_expr:
 	DOLLAR NAME get_elem_array
+	| DOLLAR NAME ARROW_CLASS right_part
+	| NAME ':' ':' right_part
+	;
+
+right_part:
+	prototype_for_arg
+	| NAME
 	;
 
 right_expr:
@@ -246,7 +303,7 @@ right_expr:
 
 
 args_and_type:
-	args_and_type ',' args_and_type
+	| args_and_type ',' args_and_type
 	| NAME left_expr
 	| left_expr
 	;

@@ -29,6 +29,15 @@
 "include"                   return INCLUDE;
 "require"                   return REQUIRE;
 "require_once"              return REQUIRE_ONCE;
+"class"                     return CLASS;
+"extends"                   return EXTENDS;
+"readonly"                  return READ_ONLY;
+"static"                    return STATIC_C;
+"const"                     return CONST_C;
+"public"                    return PUBLIC_C;
+"protected"                 return PROTECTED_C;
+"private"                   return PRIVATE_C;
+"new"                       return NEW_C;
 
 
 "null"                      return NULL_TOKEN;
@@ -39,6 +48,7 @@
 "and"                       return AND_STR;
 "or"                        return OR_STR;
 
+"->"                        return ARROW_CLASS;
 "++"						return INC;
 "--"						return DEC;
 
