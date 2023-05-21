@@ -1,3 +1,4 @@
+<?php
 include ("saddasda.qwdqdqd");
 require ("adasdad\asddsad\adasdasda");
 
@@ -119,3 +120,4 @@ $b = new b();
 
 echo ($b->getSelf());
 echo ($b->getThis());
+?>
