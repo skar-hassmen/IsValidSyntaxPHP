@@ -345,7 +345,11 @@ var:
 
 
 int main(int argc, char* argv[]){
-    yyin = fopen("test.z", "r");
+	if (argc != 2) {
+		return 1;
+	}
+
+    yyin = fopen(argv[1], "r");
     yyparse();
 	if (fl == 0) printf("ok\n");
 	fclose(yyin);
