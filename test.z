@@ -1,4 +1,5 @@
-$a = nnn() + hhh($asd) * jj($sdfsdf, $adasdasda, $dasd);
+$a = nnn() + hhh($asd) * jj(kkk(), $ddr[$fff[1]][2], $dasd) - $ddr[$fff[1]];
+
 
 function qwerty(int $ttt, $ddd, float $yyy, $yy, $yy1, bool $q12){
 
@@ -37,7 +38,7 @@ $ada1 = array(
     array(
         '1' => 1
     ),
-    "qwerty" => ["xyi" => "qwerty1"]
+    "qwerty" => ["er" => "qwerty1"]
 );
 
 $qwerty = 1;
@@ -60,3 +61,6 @@ if ($qwerty == 1) {
 } else {
     for ($y; $y < 17;);
 }
+
+
+

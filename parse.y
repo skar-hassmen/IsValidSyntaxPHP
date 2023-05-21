@@ -155,7 +155,7 @@ key_array:
 
 
 left_expr:
-	DOLLAR NAME
+	DOLLAR NAME get_elem_array
 	;
 
 right_expr:
@@ -207,6 +207,10 @@ args:
 
 prototype_for_arg:
 	NAME '(' args ')'
+	;
+
+get_elem_array:
+	| SQUARE_OPEN key_array SQUARE_CLOSE get_elem_array
 	;
 
 var:
