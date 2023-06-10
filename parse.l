@@ -10,6 +10,7 @@
 %%
 "<?php"						return START;
 "?>"						return FINISH;
+"elseif"                    return ELSEIF;
 "if"						return IF;
 "else"						return ELSE;
 "function"					return FUNC;
@@ -39,7 +40,6 @@
 "private"                   return PRIVATE_C;
 "new"                       return NEW_C;
 
-
 "null"                      return NULL_TOKEN;
 "true"                      return TRUE_TOKEN;
 "false"                     return FALSE_TOKEN;
@@ -47,6 +47,9 @@
 "xor"                       return XOR_STR;
 "and"                       return AND_STR;
 "or"                        return OR_STR;
+
+"global"                    return GLOBAL_TOKEN;
+"exit"                      return EXIT_TOKEN;
 
 "->"                        return ARROW_CLASS;
 "++"						return INC;
@@ -85,16 +88,27 @@
 "=>"                        return ARROW;
 "==="                       return EQEQEQ;
 "=="                        return EQEQ;
+"!="                        return NOEQ;
 ">"							return MORE;
 "<"							return LESS;
 "="							return EQ;
 "."                         return POINT;
 "!"                         return ANSWER;
+":"                         return DOUBLE_POINT;
 "["                         return SQUARE_OPEN;
 "]"                         return SQUARE_CLOSE;
 
-
 "$"							return DOLLAR;
+
+\"[^\"]*\\.*\"              return VALUE_STRING_SCREEN;
+\'[^']*\\.*'                return SINGLE_VALUE_STRING_SCREEN;
+
+\"[^\"]*\"                  return VALUE_STRING;
+\'[^']*'                    return SINGLE_VALUE_STRING;
+
+\/\*[^*\/]*\*\/
+
+\/\/[^\n]*
 
 [0-9]+						return NUMBER;
 [a-zA-Z_][a-zA-Z0-9_]*		return NAME;

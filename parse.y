@@ -15,7 +15,7 @@
 
 
 %start ts
-%token START FINISH FUNC ARRAY PUBLIC_C NEW_C ARROW_CLASS PROTECTED_C PRIVATE_C STATIC_C CONST_C CLASS READ_ONLY EXTENDS ARROW INCLUDE REQUIRE REQUIRE_ONCE NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
+%token START FINISH DOUBLE_POINT NOEQ ELSEIF VALUE_STRING_SCREEN SINGLE_VALUE_STRING_SCREEN SINGLE_VALUE_STRING GLOBAL_TOKEN EXIT_TOKEN VALUE_STRING FUNC ARRAY PUBLIC_C NEW_C ARROW_CLASS PROTECTED_C PRIVATE_C STATIC_C CONST_C CLASS READ_ONLY EXTENDS ARROW INCLUDE REQUIRE REQUIRE_ONCE NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
 
 %%
 ts:
@@ -89,27 +89,23 @@ operator:
 	| continue
 	| echo
 	| include
+	| exit
 	;
 
 include:
-	INCLUDE string ';'
-	| REQUIRE string ';'
-	| REQUIRE_ONCE string ';'
+	INCLUDE quote_string ';'
+	| REQUIRE quote_string ';'
+	| REQUIRE_ONCE quote_string ';'
+	| INCLUDE '(' quote_string ')' ';'
+	| REQUIRE '(' quote_string ')' ';'
+	| REQUIRE_ONCE '(' quote_string ')' ';'
 	;
 
-string:
-	'\"' continue_string '\"'
-	| '(' string ')'
-	;
-
-continue_string:
-	| continue_string continue_continue_string
-	;
-
-continue_continue_string:
-	NAME
-	| '\\'
-	| POINT
+quote_string:
+	VALUE_STRING
+	| SINGLE_VALUE_STRING
+	| VALUE_STRING_SCREEN
+	| SINGLE_VALUE_STRING_SCREEN
 	;
 
 return:
@@ -127,6 +123,10 @@ break:
 
 continue:
 	CONTINUE ';'
+	;
+
+exit:
+	EXIT_TOKEN ';'
 	;
 
 echo:
@@ -148,7 +148,7 @@ block:
 	;
 	
 ret_type:
-	| ':' NAME
+	| DOUBLE_POINT NAME
 	;
 
 switch:
@@ -161,10 +161,10 @@ cases:
 	| cases case
 	;
 case:
-	CASE NUMBER ':' block
+	CASE NUMBER DOUBLE_POINT block
 	;
 default:
-	| DEFAULT ':' block
+	| DEFAULT DOUBLE_POINT block
 	;
 	
 compare:
@@ -172,8 +172,11 @@ compare:
 	| IF '(' expr_zero ')' command else
 	| IF '(' expr_zero ')' ';'
 	;
+
 else:
-	ELSE '{' block '}'
+	ELSEIF '(' expr_zero ')' '{' block '}' else
+	| ELSEIF '(' expr_zero ')' command else
+	| ELSE '{' block '}'
 	| ELSE command
 	|
 	;
@@ -247,23 +250,25 @@ block_array:
 value_array:
 	key_array
 	| array
+	| right_expr
 	;
 
 key_array:
-	'\"' NUMBER '\"'
-	| '\"' NAME '\"'
-	| '\'' NUMBER '\''
-	| '\'' NAME '\''
-	| NEG NUMBER
-	| NUMBER
-	| var
+	NEG NUMBER
+	| right_expr
+	| NAME
 	;
 
+global_args:
+	global_args ',' left_expr
+	| left_expr
+	;
 
 left_expr:
 	DOLLAR NAME get_elem_array
 	| DOLLAR NAME ARROW_CLASS right_part
-	| NAME ':' ':' right_part
+	| NAME DOUBLE_POINT DOUBLE_POINT right_part
+	| GLOBAL_TOKEN global_args
 	;
 
 right_part:
@@ -273,6 +278,7 @@ right_part:
 
 right_expr:
 	'(' right_expr ')'
+	| ANSWER right_expr
 	| right_expr EQ right_expr
 	| right_expr SAL right_expr
 	| right_expr SAR right_expr
@@ -295,28 +301,42 @@ right_expr:
 	| right_expr LESS_EQ right_expr
 	| right_expr EQEQEQ right_expr
 	| right_expr EQEQ right_expr
+	| right_expr NOEQ right_expr
 	| right_expr XOR_STR right_expr
 	| right_expr AND_STR right_expr
 	| right_expr OR_STR right_expr
+	| right_expr '?' right_expr DOUBLE_POINT right_expr
 	| SUB NUMBER
 	| ADD NUMBER
 	| NUMBER
 	| var
 	| prototype_for_arg
+	| quote_string
 	;
 
+
+inition_value_arg:
+	SUB NUMBER
+	| ADD NUMBER
+	| NUMBER
+	| NULL_TOKEN
+	| TRUE_TOKEN
+	| FALSE_TOKEN
+	| quote_string
+	;
 
 args_and_type:
 	| args_and_type ',' args_and_type
 	| NAME left_expr
+	| left_expr EQ inition_value_arg
 	| left_expr
 	;
 
 args:
 	| args ',' args
-	| var
-	| NUMBER
-	| prototype_for_arg
+	| right_expr
+	| array
+	| NAME
 	;
 
 prototype_for_arg:
@@ -334,7 +354,6 @@ var:
 	| DEC left_expr
 	| left_expr DEC
 	| NEG left_expr
-	| ANSWER left_expr
 	| SUB left_expr
 	| ADD left_expr
 	| NULL_TOKEN
