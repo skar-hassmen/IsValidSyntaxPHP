@@ -18,6 +18,11 @@
 "for"						return FOR;
 "while"						return WHILE;
 "return"					return RETURN;
+"declare"                   return DECLARE;
+"encoding"                  return ENCODIND_TOKEN;
+"ticks"                     return TICKS_TOKEN;
+"goto"                      return GOTO_TOKEN;
+"do"                        return DO;
 "print"						return PRINT;
 "as"						return AS;
 "break"						return BREAK;
@@ -85,6 +90,7 @@
 "%"							return MOD;
 ">="                        return MORE_EQ;
 "<="                        return LESS_EQ;
+"!=="                       return NOEQEQ;
 "=>"                        return ARROW;
 "==="                       return EQEQEQ;
 "=="                        return EQEQ;
@@ -101,14 +107,14 @@
 "$"							return DOLLAR;
 
 \"[^\"]*\\.*\"              return VALUE_STRING_SCREEN;
-\'[^']*\\.*'                return SINGLE_VALUE_STRING_SCREEN;
+\'[^']*\\.*'                return SINGLE_VALUE_STRING_SCREEN; 
 
-\"[^\"]*\"                  return VALUE_STRING;
-\'[^']*'                    return SINGLE_VALUE_STRING;
+\"([^\"]*)\"                return VALUE_STRING;
+\'([^']*)'                  return SINGLE_VALUE_STRING;
 
 \/\*[^*\/]*\*\/
-
 \/\/[^\n]*
+\#[^\n]*
 
 [0-9]+						return NUMBER;
 [a-zA-Z_][a-zA-Z0-9_]*		return NAME;

@@ -15,7 +15,7 @@
 
 
 %start ts
-%token START FINISH DOUBLE_POINT NOEQ ELSEIF VALUE_STRING_SCREEN SINGLE_VALUE_STRING_SCREEN SINGLE_VALUE_STRING GLOBAL_TOKEN EXIT_TOKEN VALUE_STRING FUNC ARRAY PUBLIC_C NEW_C ARROW_CLASS PROTECTED_C PRIVATE_C STATIC_C CONST_C CLASS READ_ONLY EXTENDS ARROW INCLUDE REQUIRE REQUIRE_ONCE NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
+%token START FINISH DECLARE DO GOTO_TOKEN TICKS_TOKEN ENCODIND_TOKEN DOUBLE_POINT NOEQEQ NOEQ ELSEIF VALUE_STRING_SCREEN SINGLE_VALUE_STRING_SCREEN SINGLE_VALUE_STRING GLOBAL_TOKEN EXIT_TOKEN VALUE_STRING FUNC ARRAY PUBLIC_C NEW_C ARROW_CLASS PROTECTED_C PRIVATE_C STATIC_C CONST_C CLASS READ_ONLY EXTENDS ARROW INCLUDE REQUIRE REQUIRE_ONCE NULL_TOKEN SQUARE_OPEN SQUARE_CLOSE TRUE_TOKEN FALSE_TOKEN IF ELSE FOREACH FOR WHILE RETURN PRINT AS XOR_STR AND_STR OR_STR INC DEC ADD_EQ SUB_EQ MUMU_EQ MUL_EQ MOD_EQ DIV_EQ SAL_EQ SAR_EQ OR_EQ AND_EQ XOR_EQ POINT_EQ SAL SAR XOR NEG ANDAND OROR QUESQUEST OR AND ADD SUB MUMU MUL DIV MOD MORE_EQ LESS_EQ EQEQEQ EQEQ MORE LESS EQ POINT ANSWER DOLLAR NUMBER NAME BREAK CASE CONTINUE DEFAULT ECHO SWITCH 
 
 %%
 ts:
@@ -87,9 +87,25 @@ operator:
 	return
 	| break
 	| continue
+	| declare
 	| echo
 	| include
 	| exit
+	| goto
+	| label
+	;
+
+goto:
+	GOTO_TOKEN NAME ';'
+
+label:
+	NAME ':'
+
+declare:
+	DECLARE '(' TICKS_TOKEN EQ NUMBER ')' '{' block '}'
+	| DECLARE '(' ENCODIND_TOKEN EQ quote_string ')' '{' block '}'
+	| DECLARE '(' TICKS_TOKEN EQ NUMBER ')' ';'
+	| DECLARE '(' ENCODIND_TOKEN EQ quote_string ')' ';'
 	;
 
 include:
@@ -111,14 +127,12 @@ quote_string:
 return:
 	RETURN right_expr ';'
 	| RETURN ';'
-	| RETURN '\"' NUMBER '\"' ';'
-	| RETURN '\"' NAME '\"' ';'
-	| RETURN '\'' NUMBER '\'' ';'
-	| RETURN '\'' NAME '\'' ';'
+	| RETURN quote_string ';'
 	;
 
 break:
 	BREAK ';'
+	| BREAK NUMBER ';'
 	;
 
 continue:
@@ -126,21 +140,22 @@ continue:
 	;
 
 exit:
-	EXIT_TOKEN ';'
+	EXIT_TOKEN right_expr ';'
+	| EXIT_TOKEN ';'
 	;
 
 echo:
 	ECHO right_expr ';'
-	| ECHO '\"' NUMBER '\"' ';'
-	| ECHO '\"' NAME '\"' ';'
-	| ECHO '\'' NUMBER '\'' ';'
-	| ECHO '\'' NAME '\'' ';'
+	| ECHO quote_string ';'
 	;
+
+point_and_comma:
+	| ';'	
 
 
 func:
 	FUNC NAME '(' args_and_type ')' ret_type '{' block '}'
-	| prototype_for_arg
+	| prototype_for_arg point_and_comma
 	;
 
 block:
@@ -152,7 +167,7 @@ ret_type:
 	;
 
 switch:
-	SWITCH '(' left_expr ')' '{' switch_body '}'
+	SWITCH '(' right_expr ')' '{' switch_body '}'
 	;
 switch_body:
 	cases default
@@ -160,8 +175,15 @@ switch_body:
 cases:
 	| cases case
 	;
+
+value_case:
+	NUMBER
+	| quote_string
+	| NAME
+	;
+
 case:
-	CASE NUMBER DOUBLE_POINT block
+	CASE value_case DOUBLE_POINT block
 	;
 default:
 	| DEFAULT DOUBLE_POINT block
@@ -174,17 +196,17 @@ compare:
 	;
 
 else:
-	ELSEIF '(' expr_zero ')' '{' block '}' else
+	| ELSEIF '(' expr_zero ')' '{' block '}' else
 	| ELSEIF '(' expr_zero ')' command else
 	| ELSE '{' block '}'
 	| ELSE command
-	|
 	;
 	
 loop:
 	for
 	| while
 	| foreach
+	| do
 	;
 
 for:
@@ -193,16 +215,27 @@ for:
 	| FOR '(' expr_zero ';' expr_zero ';' expr_zero ')' ';'
 	;
 
+do:
+	DO '{' block '}' WHILE '(' expr_zero ')' ';'
+	| DO command WHILE '(' expr_zero ')' ';'
+	;
+
 while:
 	WHILE '(' expr_zero ')' '{' block '}'
 	| WHILE '(' expr_zero ')' command
 	| WHILE '(' expr_zero ')' ';'
 	;
 
+iter:
+	left_expr
+	| array
+	| prototype_for_arg
+	;
+
 foreach:
-	FOREACH '(' left_expr AS expr_foreach ')' '{' block '}'
-	| FOREACH '(' left_expr AS expr_foreach ')' command
-	| FOREACH '(' left_expr AS expr_foreach ')' ';'
+	FOREACH '(' iter AS expr_foreach ')' '{' block '}'
+	| FOREACH '(' iter AS expr_foreach ')' command
+	| FOREACH '(' iter AS expr_foreach ')' ';'
 	;
 
 expr_foreach:
@@ -256,7 +289,6 @@ value_array:
 key_array:
 	NEG NUMBER
 	| right_expr
-	| NAME
 	;
 
 global_args:
@@ -265,20 +297,28 @@ global_args:
 	;
 
 left_expr:
-	DOLLAR NAME get_elem_array
-	| DOLLAR NAME ARROW_CLASS right_part
+	dec_inc
+	| point2 DOLLAR NAME
+	| DOLLAR NAME get_elem_array ARROW_CLASS right_part
+	| DOLLAR NAME get_elem_array
 	| NAME DOUBLE_POINT DOUBLE_POINT right_part
 	| GLOBAL_TOKEN global_args
 	;
 
 right_part:
-	prototype_for_arg
+	DOLLAR prototype_for_arg
+	| prototype_for_arg
 	| NAME
 	;
 
 right_expr:
 	'(' right_expr ')'
+	| '(' NAME ')' right_expr
 	| ANSWER right_expr
+	| AND right_expr
+	| NEG right_expr
+	| SUB right_expr
+	| ADD right_expr
 	| right_expr EQ right_expr
 	| right_expr SAL right_expr
 	| right_expr SAR right_expr
@@ -301,15 +341,19 @@ right_expr:
 	| right_expr LESS_EQ right_expr
 	| right_expr EQEQEQ right_expr
 	| right_expr EQEQ right_expr
+	| right_expr NOEQEQ right_expr
 	| right_expr NOEQ right_expr
 	| right_expr XOR_STR right_expr
 	| right_expr AND_STR right_expr
 	| right_expr OR_STR right_expr
 	| right_expr '?' right_expr DOUBLE_POINT right_expr
-	| SUB NUMBER
-	| ADD NUMBER
 	| NUMBER
-	| var
+	| NAME
+	| NULL_TOKEN
+	| TRUE_TOKEN
+	| FALSE_TOKEN
+	| left_expr
+	| array
 	| prototype_for_arg
 	| quote_string
 	;
@@ -323,6 +367,7 @@ inition_value_arg:
 	| TRUE_TOKEN
 	| FALSE_TOKEN
 	| quote_string
+	| NAME
 	;
 
 args_and_type:
@@ -330,35 +375,37 @@ args_and_type:
 	| NAME left_expr
 	| left_expr EQ inition_value_arg
 	| left_expr
+	| AND args_and_type
 	;
 
 args:
 	| args ',' args
 	| right_expr
-	| array
-	| NAME
 	;
 
 prototype_for_arg:
 	NAME '(' args ')'
 	;
 
-get_elem_array:
-	| SQUARE_OPEN key_array SQUARE_CLOSE get_elem_array
+key_array_get_elem_array:
+	| key_array
 	;
 
-var:
-	left_expr
-	| INC left_expr
-	| left_expr INC
-	| DEC left_expr
-	| left_expr DEC
-	| NEG left_expr
-	| SUB left_expr
-	| ADD left_expr
-	| NULL_TOKEN
-	| TRUE_TOKEN
-	| FALSE_TOKEN
+get_elem_array:
+	| SQUARE_OPEN key_array_get_elem_array SQUARE_CLOSE get_elem_array
+	| '{' key_array_get_elem_array '}' get_elem_array
+	;
+
+value_dec_inc:
+	DOLLAR NAME get_elem_array
+	| prototype_for_arg
+	;
+
+dec_inc:
+	| INC value_dec_inc
+	| value_dec_inc INC
+	| DEC value_dec_inc
+	| value_dec_inc DEC
 	;
 %%
 

@@ -1,10 +1,25 @@
-all: l b g
+all: lex bison gcc
 
-l: 
+lex: 
 	lex parse.l
 
-b:
+bison:
 	bison -y -d parse.y
 
-g:
+gcc:
 	gcc lex.yy.c y.tab.c
+
+
+check: function test crackers
+
+function:
+	./a.out function.php
+
+test:
+	./a.out test.php
+
+crackers:
+	./a.out crackers.php
+
+nano:
+	./a.out nanoweb.php
