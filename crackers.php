@@ -102,7 +102,7 @@ global $tpl, $base, $linkbase, $cat;
 					'VERSION' 		=>$row1['version'],
 					'HOMEPAGE' 		=>$row1['homepage'],
 					'AUTHOR' 		=>$homepage?"<A HREF='".$homepage."'><strong>".$row1['company']."</strong></a>":$row1['company'],
-					// 'ORDER' 		=>$orderurl? "<A href='".$orderurl."'><img src=\"$base/img/buy_eng.gif\" alt='buy!' width='69' height='26' border='0'></A>" :"",
+					'ORDER' 		=>$orderurl? "<A href='".$orderurl."'><img src=\"$base/img/buy_eng.gif\" alt='buy!' width='69' height='26' border='0'></A>" :"",
 					'PTYPE'			=>$row1['ptype'],
 					'COST' 			=>number_format($row1['cost'], 2),
 					'ISPEED'		=>$intelspeed? $intelspeed :"not tested",

@@ -106,11 +106,11 @@
 
 "$"							return DOLLAR;
 
-\"[^\"]*\\.*\"              return VALUE_STRING_SCREEN;
-\'[^']*\\.*'                return SINGLE_VALUE_STRING_SCREEN; 
-
 \"([^\"]*)\"                return VALUE_STRING;
 \'([^']*)'                  return SINGLE_VALUE_STRING;
+
+\"(?:[^\"\\]|\\.)*\"        return VALUE_STRING_SCREEN;
+\'(?:[^\'\\]|\\.)*\'        return SINGLE_VALUE_STRING_SCREEN; 
 
 \/\*[^*\/]*\*\/
 \/\/[^\n]*

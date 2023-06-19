@@ -8,7 +8,7 @@ define("VERSION", "2.2.2");
 
 // Hard configuration and defaults
 
-// define("DEFAULT_CONFIG_FILE", ((strpos(strtoupper(PHP_OS), "WIN")!==false)?"C:\\nanoweb\\":"/etc/nanoweb/")."nanoweb.conf");
+define("DEFAULT_CONFIG_FILE", ((strpos(strtoupper(PHP_OS), "WIN")!==false)?"C:\\nanoweb\\":"/etc/nanoweb/")."nanoweb.conf");
 define("DEFAULT_LISTEN_ADDR", "0.0.0.0");
 define("DEFAULT_LISTEN_PORT", 80);
 define("DEFAULT_LISTEN_QUEUE", 20);
@@ -2795,7 +2795,7 @@ while (true) {
 
 							$chunk_header=dechex(strlen($buf))."\r\n";
 							$metasize=strlen($chunk_header)+2;
-							// $rbytes=send_response($hbuf.($buf?$chunk_header.$buf."\r\n":""), $sck_connected);
+							$rbytes=send_response($hbuf.($buf?$chunk_header.$buf."\r\n":""), $sck_connected);
 							$sent_len+=($rbytes-$metasize);
 
 						} else {
